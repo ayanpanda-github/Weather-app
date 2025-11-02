@@ -4,6 +4,7 @@ import axios from 'axios';
 // In a production app, this would be stored in environment variables
 const API_KEY = '5f472b7acba333cd8a035ea85a0d4d4c'; // Using the sample API key that works
 const BASE_URL = 'https://api.openweathermap.org/data/2.5';
+const GEO_URL = 'https://api.openweathermap.org/geo/1.0';
 
 // Create axios instance with default config
 const weatherApi = axios.create({
@@ -147,4 +148,34 @@ export const initTemperatureUnit = () => {
   const savedUnit = localStorage.getItem('temperatureUnit') || 'metric';
   weatherApi.defaults.params.units = savedUnit;
   return savedUnit;
+};
+
+// Search cities by name using OpenWeatherMap Geocoding API
+export const searchCitiesByName = async (query, limit = 5) => {
+  if (!query || query.trim().length < 2) return [];
+  const cacheKey = `geo-${query}-${limit}`;
+
+  if (isCacheValid(cacheKey)) {
+    return cache.data[cacheKey];
+  }
+
+  try {
+    const response = await axios.get(`${GEO_URL}/direct`, {
+      params: { q: query, limit, appid: API_KEY }
+    });
+    const results = (response.data || []).map((c) => ({
+      name: c.name,
+      state: c.state || '',
+      country: c.country || '',
+      lat: c.lat,
+      lon: c.lon
+    }));
+
+    cache.data[cacheKey] = results;
+    cache.timestamp[cacheKey] = Date.now();
+    return results;
+  } catch (error) {
+    console.error('Error searching cities:', error);
+    return [];
+  }
 };

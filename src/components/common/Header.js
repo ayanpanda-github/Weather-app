@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { 
   AppBar, 
   Toolbar, 
@@ -6,55 +6,22 @@ import {
   IconButton, 
   Switch, 
   Box,
-  InputBase,
   alpha,
-  styled,
-  Button
+  Button,
+  Autocomplete,
+  TextField,
+  CircularProgress
 } from '@mui/material';
 import { Search as SearchIcon, Brightness4, Brightness7, Settings, Home } from '@mui/icons-material';
 import { useNavigate } from 'react-router-dom';
+import { searchCitiesByName } from '../../services/weatherService';
 
-const SearchInput = styled('div')(({ theme }) => ({
-  position: 'relative',
-  borderRadius: theme.shape.borderRadius,
-  backgroundColor: alpha(theme.palette.common.white, 0.15),
-  '&:hover': {
-    backgroundColor: alpha(theme.palette.common.white, 0.25),
-  },
-  marginRight: theme.spacing(2),
-  marginLeft: 0,
-  width: '100%',
-  [theme.breakpoints.up('sm')]: {
-    marginLeft: theme.spacing(3),
-    width: 'auto',
-  },
-}));
 
-const SearchIconWrapper = styled('div')(({ theme }) => ({
-  padding: theme.spacing(0, 2),
-  height: '100%',
-  position: 'absolute',
-  pointerEvents: 'none',
-  display: 'flex',
-  alignItems: 'center',
-  justifyContent: 'center',
-}));
-
-const StyledInputBase = styled(InputBase)(({ theme }) => ({
-  color: 'inherit',
-  '& .MuiInputBase-input': {
-    padding: theme.spacing(1, 1, 1, 0),
-    paddingLeft: `calc(1em + ${theme.spacing(4)})`,
-    transition: theme.transitions.create('width'),
-    width: '100%',
-    [theme.breakpoints.up('md')]: {
-      width: '20ch',
-    },
-  },
-}));
 
 const Header = ({ darkMode, toggleDarkMode }) => {
   const [searchTerm, setSearchTerm] = useState('');
+  const [options, setOptions] = useState([]);
+  const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
 
   const handleSearch = (e) => {
@@ -75,6 +42,22 @@ const Header = ({ darkMode, toggleDarkMode }) => {
     }
   };
 
+  // Debounced city search suggestions
+  useEffect(() => {
+    const q = searchTerm.trim();
+    if (q.length < 2) { setOptions([]); return; }
+    let active = true;
+    setLoading(true);
+    const timer = setTimeout(async () => {
+      const results = await searchCitiesByName(q, 7);
+      if (active) {
+        setOptions(results);
+        setLoading(false);
+      }
+    }, 300);
+    return () => { active = false; clearTimeout(timer); };
+  }, [searchTerm]);
+
   return (
     <AppBar position="static">
       <Toolbar sx={{ flexWrap: { xs: 'wrap', sm: 'nowrap' } }}>
@@ -88,18 +71,76 @@ const Header = ({ darkMode, toggleDarkMode }) => {
           Weather Analytics Dashboard
         </Typography>
         
-        <SearchInput sx={{ flexGrow: 1, minWidth: { xs: '100%', sm: 'auto' }, my: { xs: 1, sm: 0 } }}>
-          <SearchIconWrapper>
-            <SearchIcon />
-          </SearchIconWrapper>
-          <StyledInputBase
-            placeholder="Search city..."
-            inputProps={{ 'aria-label': 'search' }}
-            value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
-            onKeyPress={handleSearch}
+        <Box sx={{ 
+          position: 'relative',
+          flexGrow: 1, 
+          minWidth: { xs: '100%', sm: 'auto' }, 
+          my: { xs: 1, sm: 0 },
+          mx: { xs: 0, sm: 2 }
+        }}>
+          <Autocomplete
+            freeSolo
+            options={options.map((o) => `${o.name}${o.state ? ', ' + o.state : ''}${o.country ? ', ' + o.country : ''}`)}
+            loading={loading}
+            inputValue={searchTerm}
+            onInputChange={(_, value) => setSearchTerm(value)}
+            onChange={(_, value) => {
+              if (!value) return;
+              const searchedCities = JSON.parse(localStorage.getItem('searchedCities')) || [];
+              const cityName = typeof value === 'string' ? value : '';
+              if (cityName && !searchedCities.includes(cityName)) {
+                searchedCities.push(cityName);
+                localStorage.setItem('searchedCities', JSON.stringify(searchedCities));
+              }
+              setSearchTerm('');
+              navigate('/');
+              window.location.reload();
+            }}
+            renderInput={(params) => (
+              <TextField
+                {...params}
+                placeholder="Search city..."
+                variant="outlined"
+                size="small"
+                sx={{
+                  '& .MuiOutlinedInput-root': {
+                    backgroundColor: alpha('#ffffff', 0.15),
+                    '&:hover': {
+                      backgroundColor: alpha('#ffffff', 0.25),
+                    },
+                    '& fieldset': {
+                      borderColor: 'transparent',
+                    },
+                    '&:hover fieldset': {
+                      borderColor: alpha('#ffffff', 0.3),
+                    },
+                    '&.Mui-focused fieldset': {
+                      borderColor: alpha('#ffffff', 0.5),
+                    },
+                  },
+                  '& .MuiInputBase-input': {
+                    color: 'inherit',
+                    width: '100%',
+                    [params.theme?.breakpoints?.up('md') || '@media (min-width:900px)']: {
+                      width: '20ch',
+                    },
+                  }
+                }}
+                InputProps={{
+                  ...params.InputProps,
+                  'aria-label': 'search',
+                  startAdornment: <SearchIcon sx={{ color: 'inherit', mr: 1, ml: 1 }} />,
+                  endAdornment: (
+                    <>
+                      {loading ? <CircularProgress color="inherit" size={20} /> : null}
+                      {params.InputProps.endAdornment}
+                    </>
+                  ),
+                }}
+              />
+            )}
           />
-        </SearchInput>
+        </Box>
         
         <Box sx={{ display: 'flex', alignItems: 'center' }}>
           <Button 
