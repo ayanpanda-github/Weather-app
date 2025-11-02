@@ -104,9 +104,17 @@ const Header = ({ darkMode, toggleDarkMode }) => {
         <Box sx={{ display: 'flex', alignItems: 'center' }}>
           <Button 
             color="inherit" 
+            startIcon={<Home />}
+            onClick={() => navigate('/')}
+            sx={{ mr: 1 }}
+          >
+            Home
+          </Button>
+          <Button 
+            color="inherit" 
             startIcon={<Settings />}
             onClick={() => navigate('/settings')}
-            sx={{ mr: 2 }}
+            sx={{ mr: 1 }}
           >
             Settings
           </Button>
