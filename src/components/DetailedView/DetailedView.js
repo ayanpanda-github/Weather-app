@@ -93,6 +93,10 @@ const DetailedView = () => {
     return `http://openweathermap.org/img/wn/${iconCode}@2x.png`;
   };
 
+  // Determine temperature unit symbol based on saved setting
+  const unit = (localStorage.getItem('temperatureUnit') || 'metric');
+  const tempSymbol = unit === 'imperial' ? '°F' : '°C';
+
   return (
     <Container maxWidth="lg" sx={{ mt: 4, mb: 4 }}>
       <Paper sx={{ p: 3, mb: 3 }}>
@@ -119,7 +123,7 @@ const DetailedView = () => {
               {currentWeather.name}
             </Typography>
             <Typography variant="h2" sx={{ fontSize: { xs: '2.2rem', sm: '3rem' } }}>
-              {Math.round(currentWeather.main.temp)}°C
+              {Math.round(currentWeather.main.temp)}{tempSymbol}
             </Typography>
             <Typography variant="subtitle1" sx={{ fontSize: { xs: '0.9rem', sm: '1rem' } }}>
               {currentWeather.weather[0].description}
