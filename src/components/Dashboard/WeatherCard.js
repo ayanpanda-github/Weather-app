@@ -48,7 +48,14 @@ const WeatherCard = ({ city }) => {
   };
 
   return (
-    <Card sx={{ height: '100%', display: 'flex', flexDirection: 'column' }}>
+    <Card sx={{ 
+      height: '100%', 
+      display: 'flex', 
+      flexDirection: 'column',
+      width: '100%',
+      maxWidth: { xs: '350px', sm: 'none' },
+      mx: 'auto'
+    }}>
       <CardActionArea onClick={handleCardClick}>
         <CardContent>
           <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>

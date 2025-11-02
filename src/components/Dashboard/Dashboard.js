@@ -59,7 +59,14 @@ const Dashboard = () => {
   }, [defaultCities]);
 
   return (
-    <Container maxWidth="lg" sx={{ mt: 4, mb: 4 }}>
+    <Container 
+      maxWidth="lg" 
+      sx={{ 
+        mt: 4, 
+        mb: 4, 
+        px: { xs: 2, sm: 3 }
+      }}
+    >
       <Typography variant="h4" component="h1" gutterBottom>
         Weather Dashboard
       </Typography>
@@ -73,9 +80,28 @@ const Dashboard = () => {
           {error}
         </Typography>
       ) : (
-        <Grid container spacing={3}>
+        <Grid 
+          container 
+          spacing={3} 
+          sx={{ 
+            justifyContent: { xs: 'center', sm: 'flex-start' },
+            alignItems: 'stretch'
+          }}
+        >
           {cities.map((city) => (
-            <Grid item xs={12} sm={6} md={4} key={city.id}>
+            <Grid 
+              item 
+              xs={12} 
+              sm={6} 
+              md={4} 
+              key={city.id}
+              sx={{ 
+                display: 'flex',
+                justifyContent: 'center',
+                maxWidth: { xs: '400px', sm: 'none' },
+                mx: { xs: 'auto', sm: 0 }
+              }}
+            >
               <WeatherCard city={city} />
             </Grid>
           ))}
