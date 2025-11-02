@@ -84,7 +84,7 @@ const Dashboard = () => {
           container 
           spacing={3} 
           sx={{ 
-            justifyContent: { xs: 'center', sm: 'flex-start' },
+            justifyContent: 'center',
             alignItems: 'stretch'
           }}
         >
