@@ -96,19 +96,34 @@ const DetailedView = () => {
   return (
     <Container maxWidth="lg" sx={{ mt: 4, mb: 4 }}>
       <Paper sx={{ p: 3, mb: 3 }}>
-        <Box sx={{ display: 'flex', alignItems: 'center', mb: 2 }}>
-          <Box sx={{ mr: 2 }}>
-            <img 
-              src={getWeatherIconUrl(currentWeather.weather[0].icon)} 
-              alt={currentWeather.weather[0].description} 
-              width="80" 
-              height="80"
+        <Box
+          sx={{
+            display: 'flex',
+            alignItems: 'center',
+            mb: 2,
+            flexDirection: { xs: 'column', sm: 'row' },
+            textAlign: { xs: 'center', sm: 'left' }
+          }}
+        >
+          <Box sx={{ mr: { xs: 0, sm: 2 }, mb: { xs: 1, sm: 0 } }}>
+            <img
+              src={getWeatherIconUrl(currentWeather.weather[0].icon)}
+              alt={currentWeather.weather[0].description}
+              width={80}
+              height={80}
+              style={{ maxWidth: '100%', height: 'auto' }}
             />
           </Box>
           <Box>
-            <Typography variant="h4">{currentWeather.name}</Typography>
-            <Typography variant="h2">{Math.round(currentWeather.main.temp)}°C</Typography>
-            <Typography variant="subtitle1">{currentWeather.weather[0].description}</Typography>
+            <Typography variant="h4" sx={{ fontSize: { xs: '1.6rem', sm: '2.125rem' } }}>
+              {currentWeather.name}
+            </Typography>
+            <Typography variant="h2" sx={{ fontSize: { xs: '2.2rem', sm: '3rem' } }}>
+              {Math.round(currentWeather.main.temp)}°C
+            </Typography>
+            <Typography variant="subtitle1" sx={{ fontSize: { xs: '0.9rem', sm: '1rem' } }}>
+              {currentWeather.weather[0].description}
+            </Typography>
           </Box>
         </Box>
         

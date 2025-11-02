@@ -11,7 +11,7 @@ import {
   styled,
   Button
 } from '@mui/material';
-import { Search as SearchIcon, Brightness4, Brightness7, Settings } from '@mui/icons-material';
+import { Search as SearchIcon, Brightness4, Brightness7, Settings, Home } from '@mui/icons-material';
 import { useNavigate } from 'react-router-dom';
 
 const SearchInput = styled('div')(({ theme }) => ({
@@ -77,7 +77,7 @@ const Header = ({ darkMode, toggleDarkMode }) => {
 
   return (
     <AppBar position="static">
-      <Toolbar>
+      <Toolbar sx={{ flexWrap: { xs: 'wrap', sm: 'nowrap' } }}>
         <Typography
           variant="h6"
           noWrap
@@ -88,7 +88,7 @@ const Header = ({ darkMode, toggleDarkMode }) => {
           Weather Analytics Dashboard
         </Typography>
         
-        <SearchInput>
+        <SearchInput sx={{ flexGrow: 1, minWidth: { xs: '100%', sm: 'auto' }, my: { xs: 1, sm: 0 } }}>
           <SearchIconWrapper>
             <SearchIcon />
           </SearchIconWrapper>
