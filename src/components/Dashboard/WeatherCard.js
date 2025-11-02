@@ -15,6 +15,9 @@ import { useNavigate } from 'react-router-dom';
 const WeatherCard = ({ city }) => {
   const navigate = useNavigate();
   const [isFavorite, setIsFavorite] = React.useState(false);
+  const unit = (localStorage.getItem('temperatureUnit') || 'metric');
+  const tempSymbol = unit === 'imperial' ? '°F' : '°C';
+  const windUnit = unit === 'imperial' ? 'mph' : 'm/s';
 
   React.useEffect(() => {
     // Check if this city is in favorites
@@ -82,7 +85,7 @@ const WeatherCard = ({ city }) => {
             </Box>
             <Box>
               <Typography variant="h4">
-                {Math.round(city.main.temp)}°C
+                {Math.round(city.main.temp)}{tempSymbol}
               </Typography>
               <Typography variant="body2" color="text.secondary">
                 {city.weather[0].description}
@@ -97,7 +100,7 @@ const WeatherCard = ({ city }) => {
               variant="outlined" 
             />
             <Chip 
-              label={`Wind: ${Math.round(city.wind.speed)} m/s`} 
+              label={`Wind: ${Math.round(city.wind.speed)} ${windUnit}`} 
               size="small" 
               variant="outlined" 
             />

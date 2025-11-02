@@ -6,9 +6,15 @@ import DetailedView from './components/DetailedView/DetailedView';
 import Settings from './components/Settings/Settings';
 import Header from './components/common/Header';
 import './App.css';
+import { initTemperatureUnit } from './services/weatherService';
 
 function App() {
   const [darkMode, setDarkMode] = useState(false);
+
+  // Initialize temperature unit from localStorage on app start
+  useEffect(() => {
+    initTemperatureUnit();
+  }, []);
 
   const theme = createTheme({
     palette: {

@@ -26,6 +26,9 @@ const StatItem = ({ icon, label, value, unit }) => (
 const DetailedStats = ({ weather }) => {
   if (!weather) return null;
 
+  const unit = (localStorage.getItem('temperatureUnit') || 'metric');
+  const windUnit = unit === 'imperial' ? 'mph' : 'm/s';
+
   // Convert sunrise and sunset timestamps to readable time
   const formatTime = (timestamp) => {
     const date = new Date(timestamp * 1000);
@@ -48,7 +51,7 @@ const DetailedStats = ({ weather }) => {
           icon={<Air color="primary" />}
           label="Wind Speed"
           value={Math.round(weather.wind.speed)}
-          unit="m/s"
+          unit={windUnit}
         />
       </Grid>
       

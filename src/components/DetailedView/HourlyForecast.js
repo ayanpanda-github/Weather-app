@@ -4,6 +4,10 @@ import { Box, Typography, Grid, Paper } from '@mui/material';
 const HourlyForecast = ({ forecast }) => {
   if (!forecast || !forecast.list) return null;
 
+  const unit = (localStorage.getItem('temperatureUnit') || 'metric');
+  const tempSymbol = unit === 'imperial' ? '°F' : '°C';
+  const windUnit = unit === 'imperial' ? 'mph' : 'm/s';
+
   // Get the next 24 hours of forecast data (8 items with 3-hour intervals)
   const hourlyData = forecast.list.slice(0, 8);
 
@@ -39,7 +43,7 @@ const HourlyForecast = ({ forecast }) => {
                 />
               </Box>
               <Typography variant="h6">
-                {Math.round(item.main.temp)}°C
+                {Math.round(item.main.temp)}{tempSymbol}
               </Typography>
               <Typography variant="body2">
                 {item.weather[0].description}
@@ -48,7 +52,7 @@ const HourlyForecast = ({ forecast }) => {
                 Humidity: {item.main.humidity}%
               </Typography>
               <Typography variant="body2" color="text.secondary">
-                Wind: {Math.round(item.wind.speed)} m/s
+                Wind: {Math.round(item.wind.speed)} {windUnit}
               </Typography>
             </Paper>
           </Grid>
