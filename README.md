@@ -85,8 +85,3 @@ A responsive React application that lets users search cities, view current condi
 - `src/components/Dashboard/*`: Dashboard and weather cards.
 - `src/components/DetailedView/*`: Detailed view, charts, hourly forecast, stats.
 - `src/components/Settings/Settings.js`: Unit selection and persistence.
-
-## Future Enhancements (Non‑blocking)
-- Move API key to `.env` and use build‑time injection.
-- Replace hard reloads with in‑app data refresh after city add or unit change.
-- Add unit tests for service caching and rendering.
